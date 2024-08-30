@@ -5,18 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@huggingface/transformers@latest"></script>
 </head>
 <body>
     <div id="chat-container">
         <div id="chat-box">
-            <!-- Messages will appear here -->
-            <div class="message user-message">Hello, how are you?</div>
-            <div class="message bot-message">I am fine, thank you!</div>
+            <div id="messages"></div>
         </div>
         <div id="input-container">
             <input id="input-field" type="text" placeholder="Type a message...">
             <button id="send-button">Send</button>
         </div>
     </div>
+    <script>
+        async function setupModel() {
+            const model = await window.transformers.load('distilbert-base-uncased');
+            return model;
+        }
+
+        let model;
+        setupModel().then(loadedModel => {
+            model = loadedModel;
+        });
+
+        document.getElementById('send-button').addEventListener('click', async () => {
+            const inputField = document.getElementById('input-field');
+            const message = inputField.value;
+            if (!message || !model) return;
+
+            const messagesDiv = document.getElementById('messages');
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'message user-message';
+            userMessageDiv.textContent = message;
+            messagesDiv.appendChild(userMessageDiv);
+
+            const inputs = model.tokenizer.encode(message, { addSpecialTokens: false });
+            const outputs = model(inputs);
+            const response = model.tokenizer.decode(outputs[0]);
+
+            const botMessageDiv = document.createElement('div');
+            botMessageDiv.className = 'message bot-message';
+            botMessageDiv.textContent = response;
+            messagesDiv.appendChild(botMessageDiv);
+
+            inputField.value = '';
+        });
+    </script>
 </body>
 </html>
