@@ -4,39 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot</title>
-    <style>
-        /* Basic styling for chat */
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="chat-box"></div>
-    <input id="input-field" type="text" placeholder="Type a message...">
-    <button id="send-button">Send</button>
-    
-    <script>
-        const chatBox = document.getElementById('chat-box');
-        const inputField = document.getElementById('input-field');
-        const sendButton = document.getElementById('send-button');
-
-        async function getBotResponse(userInput) {
-            const response = await fetch('/api/chat', {  // Your server-side API endpoint
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userInput })
-            });
-            const data = await response.json();
-            return data.response;
-        }
-
-        sendButton.addEventListener('click', async () => {
-            const userInput = inputField.value.trim();
-            if (userInput) {
-                chatBox.innerHTML += `<div>User: ${userInput}</div>`;
-                const botResponse = await getBotResponse(userInput);
-                chatBox.innerHTML += `<div>Bot: ${botResponse}</div>`;
-                inputField.value = '';
-            }
-        });
-    </script>
+    <div id="chat-container">
+        <div id="chat-box">
+            <!-- Messages will appear here -->
+            <div class="message user-message">Hello, how are you?</div>
+            <div class="message bot-message">I am fine, thank you!</div>
+        </div>
+        <div id="input-container">
+            <input id="input-field" type="text" placeholder="Type a message...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
 </body>
 </html>
